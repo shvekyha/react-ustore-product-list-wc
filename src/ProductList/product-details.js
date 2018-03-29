@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ProductService } from './product-service';
 import { Redirect } from 'react-router';
+import '../web-components/calculator-web-component.js';
 
 class ProductDetails extends Component {
     constructor(props){
@@ -36,6 +37,7 @@ class ProductDetails extends Component {
                     <div className="back">
                     <button onClick={this.onClickBack}>{buttonText}</button>
                     </div>
+                    <x-calculator a="3" b="2"></x-calculator>
                 </section>
             );
         }
