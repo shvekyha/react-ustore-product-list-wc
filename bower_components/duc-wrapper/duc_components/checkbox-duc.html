@@ -1,0 +1,52 @@
+<link rel="import" href="./shared-styles.html">
+<script src="./duc-base-mixin.js"></script>
+
+<dom-module id="checkbox-duc">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        margin: 10px;
+      }
+    </style>
+    <div class="table">
+      <div class="table-row">
+        <div class="table-body-cell displayName">[[dialDisplayName]]</div>
+        <div class="table-body-cell textbox"><input id="cbInput" type="checkbox" on-change="handleOnChange" checked="{{ducValue}}"/></div>
+        <div class="table-body-cell-spacer"></div>
+        <div class="table-body-cell dialID">(dialID:[[dialID]])</div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `checkbox-duc`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class CheckboxDuc extends XMPDucWrapper.DucBaseMixin(Polymer.Element) {
+      static get is() { return 'checkbox-duc'; }
+      static get properties() {
+        return {
+          ducValue:{
+            type: Boolean,
+            value: false,
+            notify: true
+          }
+        };
+      }
+
+      handleOnChange(e){
+        this.ducValue = e.target.checked;
+       // this.dispatchEvent(new CustomEvent('ducOnChange', {detail: {dialID: this.dialID}}));
+      }
+    }
+
+    window.customElements.define(CheckboxDuc.is, CheckboxDuc);
+  </script>
+</dom-module>

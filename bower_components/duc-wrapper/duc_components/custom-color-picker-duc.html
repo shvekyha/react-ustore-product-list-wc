@@ -1,0 +1,115 @@
+<link rel="import" href="./shared-styles.html">
+<script src="./duc-base-mixin.js"></script>
+
+<dom-module id="custom-color-picker-duc">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin: 10px;
+      }
+      .colorSpan{
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        margin: 3px;
+        border: 2px double darkgray;
+        border-radius: 5px;
+      }
+      .colorSpan.selected{
+        border: 2px double black;
+      }
+      .colors{
+        width: 600px;
+      }
+    </style>
+   
+    <div class="table">
+        <div class="table-row">
+          <div class="table-body-cell displayName">[[dialDisplayName]]  (dialID:[[dialID]])</div>
+          <div class="table-body-cell colors" id="colorsContainer">
+            <template is="dom-repeat" items="[[colorList]]">
+              <span class="colorSpan" value="{{item}}" id="colorSpan_{{item}}" on-click="onColorClicked" style="background-color:{{item}}"></span>
+            </template>
+          </div>
+        </div>
+      </div>
+  </template>
+
+  <script>
+    /**
+     * `custom-color-picker-duc`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class CustomColorPickerDuc extends XMPDucWrapper.DucBaseMixin(Polymer.Element) {
+      static get is() { return 'custom-color-picker-duc'; }
+      static get properties() {
+        return {
+          ducValue:{
+            type: String,
+            value: '',
+            notify: true,
+            observer: '_ducValueChanged'
+          },
+          colorList: {
+            computed: 'getColors()'
+          }
+        };
+      }
+
+      getColors(){
+        console.log("CustomColorPickerDuc getColors");
+        return ["HotPink","Salmon","Aquamarine","OrangeRed","Beige","Bisque","Azure","Blue",
+                "BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","LightBlue","CornflowerBlue","Plum",
+                "Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGrey","DarkGreen","DarkKhaki",
+                "Gold","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSeaGreen","DarkSlateBlue",
+                "Grey","Green","Purple","Red","Yellow","Violet","White"
+              ]
+              //some more colors just for fun:
+              // "DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGrey",
+              // "DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod",
+              // "Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender",
+              // "LavenderBlush","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow",
+              // "LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray",
+              // "LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine",
+              // "MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise",
+              // "MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","Navy","OldLace","Olive","OliveDrab",
+              // "Orange","OrangeRed","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru",
+              // "Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell",
+              // "Sienna","Silver","SkyBlue","SlateBlue","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle",
+              // "Tomato","Turquoise","Violet","White","WhiteSmoke","Yellow","YellowGreen"];
+      }
+
+      onColorClicked(e){
+        this.toggleSelected(e.target.value);
+        this.ducValue = e.target.value;
+      }
+
+      toggleSelected(selectedColor){
+        this.clearSelected();
+        let selectedColorSpan = this.shadowRoot.querySelector(`#colorSpan_${selectedColor}`);
+        
+        if (selectedColorSpan != null)
+          selectedColorSpan.classList.add("selected");
+      }
+
+      _ducValueChanged(){
+        if (this.ducValue == ''){
+          this.clearSelected();
+        }
+      }
+
+      clearSelected(){
+        let prevSelectedColorSpan = this.shadowRoot.querySelector('.selected');
+        if (prevSelectedColorSpan != null)
+          prevSelectedColorSpan.classList.remove("selected");
+      }
+    }
+
+    window.customElements.define(CustomColorPickerDuc.is, CustomColorPickerDuc);
+  </script>
+</dom-module>

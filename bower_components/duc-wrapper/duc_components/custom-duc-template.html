@@ -1,0 +1,70 @@
+<!-- 
+
+	This template can be used for the initial implementation of a custom duc, in the intent of using it in the duc mechanism in uStore.
+	This duc should recieves input data from the user in any way desired as long as its possible using html and JS.
+	Once data is entered, it should update the ducValue property so it can be later used by uStore. Everything else is taken care of.
+	It is advised not to change anything that is not requiered.
+	
+	See further instructions inside.
+
+-->
+
+
+<link rel="import" href="./shared-styles.html">
+<script src="./duc-base-mixin.js"></script>
+
+<!-- change my-duc-tag-name to the html tag name that denotes this component. -->
+<dom-module id="my-duc-tag-name">
+	<template>
+		<!-- shared-styles is used for all custom ducs -->
+		<style include="shared-styles"></style>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+		<h2>Hello [[prop1]]!</h2>
+		<!-- Add the template UI here. 
+				 Create an input element/s of some sort to recieve input from user.
+				 Bind the element/s to an event that updates the ducValue property value.
+				 Make sure to use two-way binding of {{ducValue}} to the value of the input, for allowing the value to update from from outside of the component.
+				 
+				 for example:
+				
+				 <input id="txtInput" type="text" on-change="handleOnChange" value="{{ducValue}}">
+		-->
+	</template>
+	
+	<script>
+		/* change MyDucClassName to your class name. The class should extend the XMPDucWrapper.DucBaseMixin as shown here  */
+		class MyDucClassName extends XMPDucWrapper.DucBaseMixin(Polymer.Element) {
+			/* change my-duc-tag-name to the html tag name that denotes this component (should be identical to the above one). */
+			static get is() { return 'my-duc-tag-name'; } 
+			static get properties() {
+				return {
+					/* this property is requiered, update its value upon value change from input */
+					ducValue:{
+						type: String,
+						value: '',
+						notify: true		/* this configuration makes the property available for two way binding*/
+					},
+					/* add here more properties to be used if needed, for example prop1: */
+					prop1: {
+						type: String,
+						value: 'example property value'
+					}
+				};
+			}
+
+			handleOnChange(e){
+				/* 
+				use an event such as this to update the ducValue property.
+				for example: 
+					this.ducValue = e.target.checked;
+				*/
+			}
+		}
+		
+		window.customElements.define(MyDucClassName.is, MyDucClassName);
+	</script>
+</dom-module>

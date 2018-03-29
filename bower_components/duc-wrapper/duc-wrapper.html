@@ -1,0 +1,159 @@
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="./simple-ajax-service.html">
+
+<dom-module id="duc-wrapper">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      div.buttons{
+        margin: 30px;
+      }
+      span.button{
+        border: 1px solid grey;
+        padding: 3px 10px;
+        color: black;
+        cursor: pointer;
+        width: 200px;
+        border-radius: 3px;
+        background-color: var(--span-button-bg-color,lightgreen);
+        /*background-color: lightgreen;*/
+      }
+      span.actionLink{
+        text-decoration: underline;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+    </style>
+    <h2>Hello {{prop1}}!</h2>
+    <div id="duc-container"></div>
+    <div class="buttons">
+      <span class="button" on-click="onClickCollectValues">Collect Values</span>
+      <span class="actionLink" on-click="clearValues">clear</span>
+    </div>
+    <div style="display:none">
+      Dial Value List: [
+      <template is="dom-repeat" items="[[dialValues]]">
+          <br/>{dialID: [[item.dialID]], value: [[item.value]]}
+      </template>]
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `duc-wrapper`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class DucWrapper extends Polymer.Element {
+      static get is() { return 'duc-wrapper'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'duc-wrapper'
+          },
+          ducList: {
+            type : Array,
+            value: []
+          },
+          basePath: {
+            type: String,
+            value: './'
+          },
+          dialValues: {
+            type: Array,
+            value: [],
+            notify: true
+          }
+        };
+      }
+
+      constructor(){
+        super();
+
+        //set the path to duc components location (can be a parameter that is passed from outside in real solution)
+        this.ducComponentsPath = 'duc_components/';     
+      }
+
+      ready() {
+        super.ready();
+		let ducContainer = this.shadowRoot.querySelector('#duc-container');
+
+        this.ducList.forEach(function(element) {
+          //adding link dynamically to document
+          this.addLinkToElement(element.fileName);
+
+          //adding element dynamically to DOM under container
+          this.addElementToDocument(ducContainer, element); 
+          
+        }, this);
+
+        
+      }
+
+      connectedCallback(){
+        super.connectedCallback();
+		console.log('DucWrapper connectedCallback this.ducList:'+this.ducList);
+        
+        //this.addEventListener('ducOnChange', e => this.handleDucOnChange(e));
+      }
+
+      addLinkToElement(fileName){
+        let href = this.basePath + this.ducComponentsPath + fileName;
+
+        //check if link already exist so it wont be imported more than once
+        let existingLink = document.head.querySelector(`link[href$='${href}']`);
+        if (existingLink == null){
+          let link = document.createElement('link');
+          link.rel = 'import';
+          link.href = href;
+          link.onload = function(e) { console.log('link loaded: '+ link.href); }; //function should already be defined on page in this point
+          link.onerror = function(e) { console.log('link load error: '+ link.href); }; //function should already be defined on page in this point
+          document.head.appendChild(link);
+        }
+      }
+
+      addElementToDocument(ducContainer, element){
+        let ducElement = document.createElement(element.tagName);
+        ducElement.dialID = element.dialID;
+        ducElement.dialDisplayName = element.dialDisplayName;
+        ducElement.setAttribute("class","duc");   //adding attribute for later recognizing of the duc
+        ducContainer.appendChild(ducElement);
+      }
+
+      onClickCollectValues() {
+        //get all values from ducs and add to dialValues list
+        let ducElements = this.shadowRoot.querySelector('#duc-container').querySelectorAll('.duc');
+
+        let dialValueList = [];
+
+        for (let element of ducElements) {
+          let dialValue = { dialID: element.dialID, value: element.ducValue };
+          dialValueList.push(dialValue);
+        };
+
+        this.dialValues = dialValueList;
+
+        this.dispatchEvent(new CustomEvent('dialValuesOnChange'));
+      }
+
+      clearValues(){
+        //clear all values from the duc elements and from dialValues list
+        let ducElements = this.shadowRoot.querySelector('#duc-container').querySelectorAll('.duc');
+        for (let element of ducElements) {
+          element.ducValue = '';
+        };
+        this.dialValues = [];
+        this.dispatchEvent(new CustomEvent('dialValuesOnChange'));
+      }
+
+    }
+
+    window.customElements.define(DucWrapper.is, DucWrapper);
+  </script>
+</dom-module>

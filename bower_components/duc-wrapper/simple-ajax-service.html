@@ -1,0 +1,90 @@
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="simple-ajax-service">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+      <!--iron-ajax auto attr -> automatically fetch data when the url is valid and after that whenerver url/params/body changes!-->
+      <!--iron-ajax -> can also use on-response="handleResponse" to bind an event for when the call returns -->
+      <!--iron-ajax -> can also use last-response="{{response}}" to bind the response object directly and use it in the template -->
+      <iron-ajax
+        auto    
+        url="{{url}}"
+        params='{"storeid":"5", "userid":"3", "cultureid": "1"}'
+        handle-as="json"
+        on-response="handleResponse"
+        id="xhr"></iron-ajax>
+      <div id="productGroupsContainer">
+        <template is="dom-repeat" items="{{productGroups}}">
+          <div>{{item.name}} ({{item.productList.length}} products online)</div>
+        </template>
+      </div>
+  </template>
+
+  <script>
+    /**
+     * `simple-ajax-service`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class SimpleAjaxService extends Polymer.Element {
+      static get is() { return 'simple-ajax-service'; }
+      static get properties() {
+        return {
+          productGroups: {
+            type: Array,
+            value: []
+          },
+          baseUrl: {
+            type: String
+          },
+          url: {
+            computed: 'getURL(baseUrl)'
+          }
+        };
+      }
+
+      getURL(baseUrl){
+        let url = [baseUrl, 'api/ProductList/GetProductGroups'].join('/');
+        console.log("SimpleAjaxService getURL url:"+ url);
+        return url;
+      }
+
+      handleResponse(response){
+        this.productGroups = JSON.parse(response.detail.response);
+      }
+
+      ready() {
+        super.ready();
+      }
+
+      connectedCallback(){
+        super.connectedCallback();
+
+        //ajax call can also be called explicitly:
+        //this.generateRequest();
+      }
+
+      //ajax call can also be called explicitly:
+      //  generateRequest(){
+      //    let request = this.shadowRoot.querySelector("#xhr").generateRequest();
+      //    request.completes.then(function(req) {
+      //        // succesful request, argument is iron-request element
+      //        console.log("call sucess");
+      //      }, function(rejected) {
+      //        // failed request, argument is an object
+      //        console.log("call failed");
+      //      }
+      //    )
+      //  }
+    }
+
+    window.customElements.define(SimpleAjaxService.is, SimpleAjaxService);
+  </script>
+</dom-module>

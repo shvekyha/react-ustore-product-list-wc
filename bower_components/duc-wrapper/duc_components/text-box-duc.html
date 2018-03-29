@@ -1,0 +1,52 @@
+<link rel="import" href="./shared-styles.html">
+<script src="./duc-base-mixin.js"></script>
+
+<dom-module id="text-box-duc">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        margin: 10px;
+      }
+    </style>
+    <div class="table">
+      <div class="table-row">
+        <div class="table-body-cell displayName">[[dialDisplayName]]</div>
+        <div class="table-body-cell textbox"><input id="txtInput" type="text" on-change="handleOnChange" value="{{ducValue}}"></div>
+        <div class="table-body-cell-spacer"></div>
+        <div class="table-body-cell dialID">(dialID:[[dialID]])</div>
+      </div>
+    </div>
+  </template>
+  <script>
+    /**
+     * `text-box-duc`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class TextBoxDuc extends XMPDucWrapper.DucBaseMixin(Polymer.Element) {
+      static get is() { return 'text-box-duc'; }
+      static get properties() {
+        return {
+          ducValue:{
+            type: String,
+            value: '',
+            notify: true
+          }
+        };
+      }
+
+      handleOnChange(e){
+        this.ducValue = e.target.value;
+        //this.dispatchEvent(new CustomEvent('ducOnChange', {detail: {dialID: this.dialID}}));
+      }
+
+    }
+
+    window.customElements.define(TextBoxDuc.is, TextBoxDuc);
+  </script>
+</dom-module>
