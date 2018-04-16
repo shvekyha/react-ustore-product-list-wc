@@ -4,9 +4,6 @@ class Calculator extends HTMLElement {
   constructor() {
     super()
     console.log('Created Calculator')
-    this._a = '0'
-    this._b = '0'
-
   }
 
   get a() {
@@ -30,14 +27,16 @@ class Calculator extends HTMLElement {
   static get observedAttributes() {
     return ['a', 'b', 'operator']
   }
+
   connectedCallback() {
     this.render()
   }
 
   render() {
+    
     const a = this._a || this.getAttribute('a')
     const b = this._b || this.getAttribute('b')
-
+    console.log(`render a=${a},b=${b}`)
     this.innerHTML = `
       <style>p {color:green;}</style>
     <p>calculator performs ${a} + ${b} = ${a * 1 + b * 1}</p>

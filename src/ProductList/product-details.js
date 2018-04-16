@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { ProductService } from './product-service';
 import { Redirect } from 'react-router';
+
 import '../web-components/calculator-web-component.js';
 
 class ProductDetails extends Component {
     constructor(props){
+        console.log('ProductDetails constructor()');
         super(props);
         this.state = {
             redirect : false,
@@ -21,7 +23,12 @@ class ProductDetails extends Component {
         this.FetchProductGroupData();
     }
     
+    componentWillMount() {
+        console.log('ProductDetails componentWillMount()');
+    }
+
     render() {
+        console.log('ProductDetails render()');
         const productID = this.props.match.params.productID;
         if (this.state.redirect === true){
             const group = ProductService.getGroupByProductID(productID, this.state.productGroupList);
@@ -37,7 +44,7 @@ class ProductDetails extends Component {
                     <div className="back">
                     <button onClick={this.onClickBack}>{buttonText}</button>
                     </div>
-                    <x-calculator a="3" b="2"></x-calculator>
+                    <x-calculator a={3} b={2}></x-calculator>
                 </section>
             );
         }

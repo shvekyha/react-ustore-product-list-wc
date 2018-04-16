@@ -106,15 +106,6 @@ module.exports = {
       // TODO: Disable require.ensure as it's not a standard language feature.
       // We are waiting for https://github.com/facebookincubator/create-react-app/issues/2176.
       // { parser: { requireEnsure: false } },
-
-      {
-        use: {
-          loader:'babel-loader',
-          options: { presets: ['es2015'] }
-        },
-        test: /web-components\.js$/,
-        exclude: /node_modules/
-      },
       
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
@@ -149,13 +140,17 @@ module.exports = {
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },
+          {
+            test: /web-components\.js$/,
+            loader: 'imports-loader?global=>window,this=>window'
+          }, 
           // Process JS with Babel.
           {
             test: /\.(js|jsx)$/,
             include: paths.appSrc,
+            exclude: /(node_modules|bower_components|web-components)/,
             loader: require.resolve('babel-loader'),
             options: {
-              
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
