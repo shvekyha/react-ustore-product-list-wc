@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { ProductService } from './product-service';
 import { Redirect } from 'react-router';
+import DdlComponent from './ddl-component';
+import PriceDisplay from './price-display';
 
 import '../web-components/calculator-web-component.js';
 
@@ -45,6 +47,8 @@ class ProductDetails extends Component {
                     <button onClick={this.onClickBack}>{buttonText}</button>
                     </div>
                     <x-calculator a={3} b={2}></x-calculator>
+                    <DdlComponent></DdlComponent>
+                    <PriceDisplay></PriceDisplay>
                 </section>
             );
         }
