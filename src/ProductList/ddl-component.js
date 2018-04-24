@@ -14,7 +14,8 @@ class ConnectedDdlComponent extends Component {
         
         super(props);
         this.state = {
-            selectedValue : '1',      
+            selectedValue : '1',  
+            selectedValueText : 'Matt $1',    
         }
 
        console.log('DdlComponent constructor() this.state.selectedValue:'+this.state.selectedValue);
@@ -39,9 +40,9 @@ class ConnectedDdlComponent extends Component {
                 <div>Select Paper Type:</div>
                 <div>
                     <select onChange={this.handleOnChange} defaultValue={this.state.selectedValue}>
-                        <option value="1">Matt $1</option>
-                        <option value="2">Gloss $2</option>
-                        <option value="3">Premium $3</option>
+                        <option title="Matt $1" value="1">Matt $1</option>
+                        <option title="Gloss $2" value="2">Gloss $2</option>
+                        <option title="Premium $3" value="3">Premium $3</option>
                     </select>
                 </div>
             </div>
@@ -50,8 +51,8 @@ class ConnectedDdlComponent extends Component {
 
     handleOnChange(event){
         const selectedValue = event.target.value;
-        console.log('handleOnChange event.target.value: '+event.target.value);
-        this.setState({ selectedValue: selectedValue });
+        const selectedValueText = event.target.selectedOptions[0].title;
+        this.setState({ selectedValue: selectedValue, selectedValueText: selectedValueText });
         this.props.setSelected({ selectedValue });
     }
 }
